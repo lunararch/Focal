@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "focal"
+version = "0.1.0"
+description = "A window mirror and tracking overlay for Windows and Linux"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.26",
+    "opencv-python>=4.9",
+    "PySide6>=6.7",
+    "ultralytics>=8.3",
+    "torch>=2.13.0",
+    "torchvision>=0.28.0",
+    "pywin32>=306; sys_platform == 'win32'",
+    "windows-capture>=2.0.0; sys_platform == 'win32'",
+    "pipewire-capture>=0.2; sys_platform == 'linux'",
+]
+
+[project.scripts]
+focal = "focal.__main__:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
+
+[tool.uv]
+default-groups = ["dev"]
+
+# PyTorch is resolved from PyPI (CPU builds) by default so Focal installs on any
+# distro/architecture. On a machine with an NVIDIA GPU, use uv's built-in
+# backend selection to install CUDA wheels instead:
+#
+#   uv sync --torch-backend=auto
+#
+# (or export UV_TORCH_BACKEND=auto). uv probes the installed GPU driver and
+# picks the matching PyTorch index; see https://docs.astral.sh/uv/guides/integration/pytorch/.
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
